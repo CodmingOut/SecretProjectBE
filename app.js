@@ -1,53 +1,21 @@
-var app = require('express')();
-var server = require('http').createServer(app);
-var io = require('socket.io')(server);
+var WebSocketServer = require('ws').Server;
 
-app.get('/', function(req, res) {
-    res.sendFile(__dirname + '/index.html');
+var wss = new WebSocketServer({port: 3100});
+
+wss.broadcast = function broadcast(message) {
+  console.log("Broadcast : ", message);
+  wss.clients.forEach((client) => {
+    client.send(message);
+  });
+};
+
+wss.on('connection', (ws) => {
+  ws.on('message', (message) => { // echo
+    console.log(message);
+    ws.send(message);
+  })
 });
 
-// io.on('connection', function(socket) {
-
-//     // 접속한 클라이언트의 정보가 수신되면
-//     socket.on('login', function(data) {
-//       console.log('Client logged-in:\n name:' + data.name + '\n userid: ' + data.userid);
-  
-//       // socket에 클라이언트 정보를 저장한다
-//       socket.name = data.name;
-//       socket.userid = data.userid;
-  
-//       // 접속된 모든 클라이언트에게 메시지를 전송한다
-//       io.emit('login', data.name);
-//     });
-  
-//     // 클라이언트로부터의 메시지가 수신되면
-//     socket.on('chat', function(data) {
-//       console.log('Message from %s: %s', socket.name, data.msg);
-  
-//       var msg = {
-//         from: {
-//           name: socket.name,
-//           userid: socket.userid
-//         },
-//         msg: data.msg
-//       };
-
-//       io.emit('chat', msg);
-//     });
-
-//     socket.on('forceDisconnect', function() {
-//       socket.disconnect();
-//     })
-  
-//     socket.on('disconnect', function() {
-//       console.log('user disconnected: ' + socket.name);
-//     });
-// });
-
-setInterval(function() {
-    io.emit('chat', JSON.stringify({"sender":"doralife11@naver.com","fileName":"gawegaweg","mailTitle":"This is Virus1.","mailContent":"This is Virus Contents1.","timestamp":"202011240001"}));
+setInterval(() => {
+    wss.broadcast(JSON.stringify({"sender":"doralife11@naver.com","fileName":"gawegaweg","mailTitle":"This is Virus1.","mailContent":"This is Virus Contents1.","timestamp":"202011240001"}));
 }, 1000);
-
-server.listen(3000, function() {
-  console.log('Socket IO server listening on port 3000');
-});

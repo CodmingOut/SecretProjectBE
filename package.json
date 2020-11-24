@@ -18,7 +18,6 @@
   },
   "homepage": "https://github.com/CodmingOut/SecretProjectBE#readme",
   "dependencies": {
-    "express": "4.17.1",
-    "socket.io": "3.0.3"
+    "ws": "^7.4.0"
   }
 }
