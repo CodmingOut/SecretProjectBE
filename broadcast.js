@@ -4,7 +4,7 @@ exports.broadcast = function broadcast(wss, sender, fileName, mailTitle, mailCon
     "fileName" : String(fileName),
     "mailTitle" : String(mailTitle),
     "mailContent" : String(mailContent),
-    "timestamp" : String(new Date().getTime())
+    "timestamp" : new Date().getTime()
   }
   message = JSON.stringify(jsonContent);
   if(show_log)
